@@ -11,7 +11,7 @@ import javax.persistence.InheritanceType;
 
 @Entity(name="USERS")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="role", 
+@DiscriminatorColumn(name="user_type", 
   discriminatorType = DiscriminatorType.STRING)
 public class User {
 	
@@ -22,6 +22,7 @@ public class User {
 	private String username;
 	private String password;
 	private boolean isEnabled = true;
+	
 	
 	
 
@@ -53,8 +54,10 @@ public class User {
 		return password;
 	}
 	public void setPassword(String password) {
+		
 		this.password = password;
 	}
+ 
 
 	
 	

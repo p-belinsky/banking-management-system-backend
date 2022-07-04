@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cogent.banking.api.exception.AccountNotCreatedException;
@@ -28,6 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
 	private TransactionRepository transactionRepository;
 	private AccountRepository accountRepository;
 	private BeneficiaryRepository beneficiaryRepository;
+
 	
 
 	public CustomerServiceImpl(CustomerRepository customerRepository, TransactionRepository transactionRepository,
@@ -37,12 +40,14 @@ public class CustomerServiceImpl implements CustomerService {
 		this.transactionRepository = transactionRepository;
 		this.accountRepository = accountRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
+	
 	}
 
 
 
 	@Override
 	public Customer addCustomer(Customer customer) {
+
 		Customer customerToAdd = customerRepository.save(customer);
 		
 		return customerToAdd;

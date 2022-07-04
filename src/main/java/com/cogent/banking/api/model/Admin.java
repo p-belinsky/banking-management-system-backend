@@ -7,7 +7,12 @@ import javax.persistence.Entity;
 @DiscriminatorValue("ADMIN")
 public class Admin extends User {
 	
-	
+
+	private String role = "ADMIN";
+
+	public String getRole() {
+		return role;
+	}
 	
 
 }

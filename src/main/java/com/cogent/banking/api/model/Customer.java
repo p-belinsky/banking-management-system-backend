@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 public class Customer extends User {
 
 	private String mobile;
+	private String role = "CUSTOMER";
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "cus_acc_tbl", joinColumns = @JoinColumn(name = "customerId"))
@@ -41,5 +42,11 @@ public class Customer extends User {
 	public void setAccounts(List<Account> accounts) {
 		this.accounts = accounts;
 	}
+
+	public String getRole() {
+		return role;
+	}
+
+
 
 }
