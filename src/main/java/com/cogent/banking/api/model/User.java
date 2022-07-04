@@ -21,9 +21,16 @@ public class User {
 	private String fullname;
 	private String username;
 	private String password;
+	private boolean isEnabled = true;
 	
 	
 
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 	public int getUserId() {
 		return userId;
 	}
