@@ -8,11 +8,7 @@ import javax.persistence.Entity;
 public class Admin extends User {
 	
 
-	private String role = "ADMIN";
 
-	public String getRole() {
-		return role;
-	}
 	
 
 }

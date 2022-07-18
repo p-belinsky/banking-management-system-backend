@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.cogent.banking.api.enums.Status;
 import com.cogent.banking.api.exception.AccountNotFoundException;
 import com.cogent.banking.api.exception.CustomerNotFoundException;
 import com.cogent.banking.api.exception.InsufficentBalanceException;
@@ -34,12 +36,16 @@ public class StaffServiceImpl implements StaffService {
 	private CustomerRepository customerRepository;
 	private TransactionRepository transactionRepository;
 	private AdminRepository adminRepository;
+	private PasswordEncoder passwordEncoder;
+
+
 
 
 
 	public StaffServiceImpl(StaffRepository staffRepository, BeneficiaryRepository beneficiaryRepository,
 			AccountRepository accountRepository, CustomerRepository customerRepository,
-			TransactionRepository transactionRepository, AdminRepository adminRepository) {
+			TransactionRepository transactionRepository, AdminRepository adminRepository,
+			PasswordEncoder passwordEncoder) {
 		super();
 		this.staffRepository = staffRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
@@ -47,6 +53,7 @@ public class StaffServiceImpl implements StaffService {
 		this.customerRepository = customerRepository;
 		this.transactionRepository = transactionRepository;
 		this.adminRepository = adminRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -65,7 +72,7 @@ public class StaffServiceImpl implements StaffService {
 			
 			}
 
-		
+		staff.setPassword(passwordEncoder.encode(staff.getPassword()));
 		staffRepository.save(staff);
 
 	}
@@ -76,7 +83,7 @@ public class StaffServiceImpl implements StaffService {
 		List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
 		List<Beneficiary> needApproval = new ArrayList<>();
 		for (int i = 0; i < beneficiaries.size(); i++) {
-			if (beneficiaries.get(i).isActive() == false) {
+			if (beneficiaries.get(i).getStatus() == Status.DISABLE) {
 				needApproval.add(beneficiaries.get(i));
 			}
 		}
@@ -89,7 +96,7 @@ public class StaffServiceImpl implements StaffService {
 		
 		try {
 		Beneficiary beneficiaryToApprove = beneficiaryRepository.findById(beneficiary.getBeneficiaryId()).get();
-		beneficiaryToApprove.setActive(beneficiary.isActive());
+		beneficiaryToApprove.setStatus(beneficiary.getStatus());
 		beneficiaryRepository.save(beneficiaryToApprove);
 		return beneficiaryToApprove;
 		}
@@ -103,7 +110,7 @@ public class StaffServiceImpl implements StaffService {
 		List<Account> accounts = accountRepository.findAll();
 		List<Account> needApproval = new ArrayList<>();
 		for (int i = 0; i < accounts.size(); i++) {
-			if (accounts.get(i).isApproved() == false) {
+			if (accounts.get(i).getAccountStaus() == Status.DISABLE) {
 				needApproval.add(accounts.get(i));
 			}
 		}
@@ -116,7 +123,7 @@ public class StaffServiceImpl implements StaffService {
 		
 		try {
 		Account accountToApprove = accountRepository.findById(account.getAccountId()).get();
-		accountToApprove.setApproved(account.isApproved());
+		accountToApprove.setAccountStaus(account.getAccountStaus());
 		accountToApprove.setStaffUsername(account.getStaffUsername());
 		accountRepository.save(accountToApprove);
 		return accountToApprove;
@@ -138,7 +145,7 @@ public class StaffServiceImpl implements StaffService {
 		
 		try {
 		Customer customerToEnable = customerRepository.findById(customer.getUserId()).get();
-		customerToEnable.setEnabled(customer.isEnabled());
+		customerToEnable.setStatus(customer.getStatus());
 		customerRepository.save(customerToEnable);
 		return customerToEnable;
 		}
@@ -255,7 +262,7 @@ public class StaffServiceImpl implements StaffService {
 		
 		try {
 			Staff staffToUpdate = staffRepository.findById(staff.getUserId()).get();
-			staffToUpdate.setEnabled(staff.isEnabled());
+			staffToUpdate.setStatus(staff.getStatus());
 			staffRepository.save(staffToUpdate);	
 			return staffToUpdate.getUsername().toUpperCase()+ " Status Changed";
 		} catch(Exception e) {
@@ -281,7 +288,7 @@ public class StaffServiceImpl implements StaffService {
 			
 			}
 		
-		
+			admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 			adminRepository.save(admin);
 		
 	}

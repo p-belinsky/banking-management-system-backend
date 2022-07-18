@@ -1,47 +1,71 @@
 package com.cogent.banking.api.security;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.cogent.banking.api.service.CustomerService;
 
 @Configuration
 public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 
+	
+
+    private final UserDetailsService userDetailsService;
+    
+   
+
+
+
+
+	public MySecurityConfig(UserDetailsService userDetailsService) {
+		super();
+		this.userDetailsService = userDetailsService;
+	}
 
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-		.csrf().disable()
-		.authorizeRequests()
-		.antMatchers("/api/customer/**").hasRole("CUSTOMER")
-		.antMatchers("/api/staff/**").hasRole("STAFF")
-		.antMatchers("/api/admin/staff").hasRole("ADMIN")
-		.anyRequest()
-		.authenticated()
-		.and()
-		.httpBasic();
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
+        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
+	
+		http.csrf().disable();
+		http.sessionManagement().sessionCreationPolicy(STATELESS);
+        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/customer/**").hasAnyAuthority("CUSTOMER");
+        http.authorizeRequests().antMatchers("/api/staff/**").hasAnyAuthority("STAFF");
+        http.authorizeRequests().antMatchers("/api/admin/staff/**").hasAnyAuthority("ADMIN");
+        http.authorizeRequests().anyRequest().authenticated();
+        http.addFilter(customAuthenticationFilter);
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+
 	}
 	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("joshD123").password(this.passwordEnconder().encode("password")).roles("CUSTOMER");
-		auth.inMemoryAuthentication().withUser("sp1").password(this.passwordEnconder().encode("password")).roles("STAFF");
-		auth.inMemoryAuthentication().withUser("ap1").password(this.passwordEnconder().encode("password")).roles("ADMIN");
 
-
-		
-	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
+    }
 	
-	@Bean
-	public PasswordEncoder passwordEnconder() {
-		return new BCryptPasswordEncoder();
-	}
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+    
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }

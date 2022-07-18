@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.cogent.banking.api.enums.Status;
+
 @Entity
 @Table(name="BENEFICIARIES")
 public class Beneficiary {
@@ -18,7 +20,7 @@ public class Beneficiary {
 	private int beneficiaryNo;
 	private String beneficiaryName;
 	private Date dateCreated = new Date();
-	private boolean isActive;
+	private Status status;
 	
 	
 	
@@ -46,12 +48,13 @@ public class Beneficiary {
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
-	public boolean isActive() {
-		return isActive;
+	public Status getStatus() {
+		return status;
 	}
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setStatus(Status status) {
+		this.status = status;
 	}
+
 	
 	
 

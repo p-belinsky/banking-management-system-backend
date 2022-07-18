@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cogent.banking.api.exception.AccountNotCreatedException;
@@ -24,29 +28,32 @@ import com.cogent.banking.api.repo.CustomerRepository;
 import com.cogent.banking.api.repo.TransactionRepository;
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl implements CustomerService{
 
 	private CustomerRepository customerRepository;
 	private TransactionRepository transactionRepository;
 	private AccountRepository accountRepository;
 	private BeneficiaryRepository beneficiaryRepository;
+	private PasswordEncoder passwordEncoder;
 
-	
+
 
 	public CustomerServiceImpl(CustomerRepository customerRepository, TransactionRepository transactionRepository,
-			AccountRepository accountRepository, BeneficiaryRepository beneficiaryRepository) {
+			AccountRepository accountRepository, BeneficiaryRepository beneficiaryRepository,
+			PasswordEncoder passwordEncoder) {
 		super();
 		this.customerRepository = customerRepository;
 		this.transactionRepository = transactionRepository;
 		this.accountRepository = accountRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
-	
+		this.passwordEncoder = passwordEncoder;
 	}
 
 
 
 	@Override
 	public Customer addCustomer(Customer customer) {
+		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 
 		Customer customerToAdd = customerRepository.save(customer);
 		
@@ -360,7 +367,7 @@ public class CustomerServiceImpl implements CustomerService {
 			throws CustomerNotFoundException, AccountNotFoundException {
 
 		Account accountToUpdate = getAccountByCustomerIdAndAccountNo(customerId, accountNo);
-		accountToUpdate.setApproved(account.isApproved());
+		accountToUpdate.setAccountStaus(account.getAccountStaus());
 		accountRepository.save(accountToUpdate);
 	return accountToUpdate;
 		
@@ -388,6 +395,13 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		return account;
 	}
+
+
+
+
+
+
+
 
 
 }

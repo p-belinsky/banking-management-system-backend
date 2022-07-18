@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import com.cogent.banking.api.enums.Status;
+import com.cogent.banking.api.enums.UserRole;
+
 
 @Entity(name="USERS")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -21,17 +24,13 @@ public class User {
 	private String fullname;
 	private String username;
 	private String password;
-	private boolean isEnabled = true;
+	private Status status = Status.ENABLE;
+	private UserRole role;
 	
 	
 	
 
-	public boolean isEnabled() {
-		return isEnabled;
-	}
-	public void setEnabled(boolean isEnabled) {
-		this.isEnabled = isEnabled;
-	}
+
 	public int getUserId() {
 		return userId;
 	}
@@ -56,6 +55,18 @@ public class User {
 	public void setPassword(String password) {
 		
 		this.password = password;
+	}
+	public UserRole getRole() {
+		return role;
+	}
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
+	public Status getStatus() {
+		return status;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
 	}
  
 

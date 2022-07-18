@@ -16,6 +16,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.cogent.banking.api.enums.Status;
+import com.cogent.banking.api.enums.AccountType;
+
 @Entity
 @Table(name="ACCOUNTS")
 public class Account {
@@ -26,8 +29,8 @@ public class Account {
 	private String customerName;
 	private int accountNo;
 	private double accountBalance;
-	private String accountType;
-	private boolean isApproved;
+	private AccountType accountType;
+	private Status accountStatus = Status.DISABLE;
 	private String staffUsername = "";
 	private Date dateCreated = new Date();
 	
@@ -87,21 +90,14 @@ public class Account {
 		this.accountBalance = accountBalance;
 	}
 
-	public String getAccountType() {
+	public AccountType getAccountType() {
 		return accountType;
 	}
 
-	public void setAccountType(String accountType) {
+	public void setAccountType(AccountType accountType) {
 		this.accountType = accountType;
 	}
 
-	public boolean isApproved() {
-		return isApproved;
-	}
-
-	public void setApproved(boolean isApproved) {
-		this.isApproved = isApproved;
-	}
 
 	public String getStaffUsername() {
 		return staffUsername;
@@ -133,6 +129,14 @@ public class Account {
 
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
+	}
+
+	public Status getAccountStaus() {
+		return accountStatus;
+	}
+
+	public void setAccountStaus(Status accountStatus) {
+		this.accountStatus = accountStatus;
 	}
 
 
