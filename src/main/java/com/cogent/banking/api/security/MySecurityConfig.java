@@ -47,8 +47,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 	        corsConfiguration.setExposedHeaders(List.of("Authorization"));
 		
 		
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
-        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
+
 	
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(STATELESS);
@@ -56,10 +55,10 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/customer/**").permitAll();
         http.authorizeRequests().antMatchers("/api/staff/**").permitAll();
         http.authorizeRequests().antMatchers("/api/admin/staff/**").permitAll();
+        http.authorizeRequests().antMatchers("/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated().and()
         .cors().configurationSource(request-> corsConfiguration);
-        http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+
 
 	}
 	

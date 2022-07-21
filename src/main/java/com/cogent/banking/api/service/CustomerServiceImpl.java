@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +15,6 @@ import com.cogent.banking.api.exception.BeneficiaryNotAddedException;
 import com.cogent.banking.api.exception.CustomerNotFoundException;
 import com.cogent.banking.api.exception.InsufficentBalanceException;
 import com.cogent.banking.api.model.Account;
-import com.cogent.banking.api.model.Admin;
 import com.cogent.banking.api.model.Beneficiary;
 import com.cogent.banking.api.model.Customer;
 import com.cogent.banking.api.model.Transaction;

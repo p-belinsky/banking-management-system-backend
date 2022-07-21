@@ -42,5 +42,14 @@ public class UserService implements UserDetailsService {
 		
 		
 	}
+	
+	public User loadUser(String username) {
+		User user = userRepository.findByUsername(username);
+		if(user == null) {
+			throw new UsernameNotFoundException("User not found in the database");
+		} else {
+			return user;
+		}
+	}
 
 }
