@@ -8,5 +8,6 @@ import com.cogent.banking.api.model.Staff;
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Integer> {
-
+	public Staff findByUsernameAndPassword(String username, String password);
+	public Staff findByUsername(String username);
 }

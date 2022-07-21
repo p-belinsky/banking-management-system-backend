@@ -131,13 +131,14 @@ public class Account {
 		this.transactions = transactions;
 	}
 
-	public Status getAccountStaus() {
+	public Status getAccountStatus() {
 		return accountStatus;
 	}
 
-	public void setAccountStaus(Status accountStatus) {
+	public void setAccountStatus(Status accountStatus) {
 		this.accountStatus = accountStatus;
 	}
+
 
 
 	

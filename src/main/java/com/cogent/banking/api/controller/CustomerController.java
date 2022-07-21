@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,21 +23,28 @@ import com.cogent.banking.api.exception.InsufficentBalanceException;
 import com.cogent.banking.api.model.Account;
 import com.cogent.banking.api.model.Beneficiary;
 import com.cogent.banking.api.model.Customer;
+import com.cogent.banking.api.model.Staff;
 import com.cogent.banking.api.model.Transaction;
 import com.cogent.banking.api.service.CustomerService;
+import com.cogent.banking.api.service.UserService;
 
 @RestController
 @RequestMapping("/api/customer")
+@CrossOrigin
 public class CustomerController {
 	
 	
 	private CustomerService customerService;
+	private UserService userService;
 
-	public CustomerController(CustomerService customerService) {
+
+	
+	public CustomerController(CustomerService customerService, UserService userService) {
 		super();
 		this.customerService = customerService;
+		this.userService = userService;
 	}
-	
+
 	@PostMapping("/register")
 	public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer){
 		Customer customerToAdd = customerService.addCustomer(customer);
@@ -122,6 +130,22 @@ public class CustomerController {
 	public ResponseEntity<Account> approveAccount(@PathVariable int customerId, @PathVariable int accountNo, @RequestBody Account account) throws CustomerNotFoundException, AccountNotFoundException{
 		Account approveAccount = customerService.approveAccount(customerId, accountNo, account);
 		return new ResponseEntity<Account>(approveAccount, HttpStatus.OK);
+	}
+	
+	@GetMapping("/load/{username}")
+	public ResponseEntity<Customer> loadCustomer(@PathVariable String username) throws CustomerNotFoundException{
+		Customer customer = customerService.loadCustomerByUsername(username);
+		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+	}
+	
+	@GetMapping("/loginCustomer/username/{username}/{password}")
+	public Customer loginCustomer(@PathVariable("username") String username, @PathVariable("password") String password) {
+		return customerService.loginCustomer(username, password);
+	}
+	
+	@PutMapping("/customerForgot")
+	public ResponseEntity<String> customerForgotPassword(@RequestBody Customer customer) {
+		return new ResponseEntity<String> (customerService.matchCustomer(customer), HttpStatus.OK);
 	}
 
 }

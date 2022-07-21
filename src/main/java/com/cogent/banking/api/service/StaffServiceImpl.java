@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cogent.banking.api.enums.Status;
+import com.cogent.banking.api.enums.UserRole;
 import com.cogent.banking.api.exception.AccountNotFoundException;
 import com.cogent.banking.api.exception.CustomerNotFoundException;
 import com.cogent.banking.api.exception.InsufficentBalanceException;
@@ -71,7 +72,8 @@ public class StaffServiceImpl implements StaffService {
 			}
 			
 			}
-
+		
+		staff.setRole(UserRole.STAFF);
 		staff.setPassword(passwordEncoder.encode(staff.getPassword()));
 		staffRepository.save(staff);
 
@@ -110,7 +112,7 @@ public class StaffServiceImpl implements StaffService {
 		List<Account> accounts = accountRepository.findAll();
 		List<Account> needApproval = new ArrayList<>();
 		for (int i = 0; i < accounts.size(); i++) {
-			if (accounts.get(i).getAccountStaus() == Status.DISABLE) {
+			if (accounts.get(i).getAccountStatus() == Status.DISABLE) {
 				needApproval.add(accounts.get(i));
 			}
 		}
@@ -123,7 +125,7 @@ public class StaffServiceImpl implements StaffService {
 		
 		try {
 		Account accountToApprove = accountRepository.findById(account.getAccountId()).get();
-		accountToApprove.setAccountStaus(account.getAccountStaus());
+		accountToApprove.setAccountStatus(account.getAccountStatus());
 		accountToApprove.setStaffUsername(account.getStaffUsername());
 		accountRepository.save(accountToApprove);
 		return accountToApprove;
@@ -287,10 +289,54 @@ public class StaffServiceImpl implements StaffService {
 			}
 			
 			}
-		
+			admin.setRole(UserRole.ADMIN);
 			admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 			adminRepository.save(admin);
 		
 	}
+
+	@Override
+	public Staff loginStaff(String username, String password) {
+		return staffRepository.findByUsernameAndPassword(username, password);	
+		
+		
+	}
+
+	@Override
+	public Admin loginAdmin(String username, String password) {
+		return adminRepository.findByUsernameAndPassword(username, password);	
+
+	}
+
+	@Override
+	public Staff getStaffByUsername(String username) {
+	
+		return staffRepository.findByUsername(username);
+	}
+
+	@Override
+	public Admin getAdminByUsername(String username) {
+	
+		return adminRepository.findByUsername(username);
+	}
+
+	@Override
+	public String matchStaff(Staff staff) {
+		Staff foundStaff = staffRepository.findByUsername(staff.getUsername());
+		if(foundStaff.getMobile() == staff.getMobile() && foundStaff.getRole() == staff.getRole()) {
+			return foundStaff.getPassword();
+		}
+		return "user information does not match";
+	}
+
+	@Override
+	public String matchAdmin(Admin admin) {
+		Admin foundAdmin = adminRepository.findByUsername(admin.getUsername());
+		if(foundAdmin.getRole() == admin.getRole()) {
+			return foundAdmin.getPassword();
+		}
+		return "user information does not match";
+	}
+
 
 }

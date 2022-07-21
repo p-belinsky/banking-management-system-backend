@@ -116,4 +116,33 @@ public class StaffController {
 		staffService.addAdmin(admin);
 		return new ResponseEntity<String>(HttpStatus.CREATED);	
 	}
+	
+	//staff controller
+	@GetMapping("/loginStaff/{username}/{password}")
+	public ResponseEntity<Staff> loginStaff(@PathVariable("username") String username, @PathVariable("password") String password) {
+		return new ResponseEntity<Staff> (staffService.loginStaff(username, password), HttpStatus.OK);
+	}
+	
+	@GetMapping("/loginAdmin/{username}/{password}")
+	public ResponseEntity<Admin> loginAdmin(@PathVariable("username") String username, @PathVariable("password") String password) {
+		return new ResponseEntity<Admin> (staffService.loginAdmin(username, password), HttpStatus.OK);
+	}
+	
+	@PutMapping("/api/staffForgot")
+	public ResponseEntity<String> staffForgotPassword(@RequestBody Staff staff) {
+		return new ResponseEntity<String> (staffService.matchStaff(staff), HttpStatus.OK);
+	}
+	
+	@PutMapping("/api/adminForgot")
+	public ResponseEntity<String> adminForgotPassword(@RequestBody Admin admin) {
+		return new ResponseEntity<String> (staffService.matchAdmin(admin), HttpStatus.OK);
+	}
+	
+
+	@GetMapping("/api/admin/{username}")
+	public ResponseEntity<Admin> findAdminByUsername(@PathVariable("username") String username) {
+		return new ResponseEntity<Admin> (staffService.getAdminByUsername(username), HttpStatus.OK);
+	}
+	
+	
 }

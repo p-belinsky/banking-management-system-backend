@@ -44,4 +44,17 @@ public interface StaffService {
 	
 	public void addAdmin(Admin admin) throws UserNameNotUniqueException;
 	
+	public Staff loginStaff(String username, String password);
+	
+	public Staff getStaffByUsername(String username);
+	
+	public Admin loginAdmin(String username, String password);
+	
+	public Admin getAdminByUsername(String username);
+
+	public String matchStaff(Staff staff);
+
+	public String matchAdmin(Admin admin);
+
+	
 }

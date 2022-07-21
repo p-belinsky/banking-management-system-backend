@@ -15,6 +15,8 @@ import com.cogent.banking.api.model.Transaction;
 
 public interface CustomerService {
 
+	public Customer loadCustomerByUsername(String username) throws CustomerNotFoundException;
+	
 	public Customer addCustomer(Customer customer);
 	
 	public Customer getCustomerById(int customerId) throws CustomerNotFoundException;
@@ -47,5 +49,10 @@ public interface CustomerService {
 
 	public Account getAccountByCustomerIdAndAccountNo(int customerId, int accountNo)
 			throws CustomerNotFoundException, AccountNotFoundException;
+	
+	public Customer loginCustomer(String username, String password);
+
+	public String matchCustomer(Customer customer);
+	
 
 }

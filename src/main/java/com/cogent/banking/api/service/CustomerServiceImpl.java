@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.cogent.banking.api.enums.UserRole;
 import com.cogent.banking.api.exception.AccountNotCreatedException;
 import com.cogent.banking.api.exception.AccountNotFoundException;
 import com.cogent.banking.api.exception.AccountsNotUniqueException;
@@ -19,6 +20,7 @@ import com.cogent.banking.api.exception.BeneficiaryNotAddedException;
 import com.cogent.banking.api.exception.CustomerNotFoundException;
 import com.cogent.banking.api.exception.InsufficentBalanceException;
 import com.cogent.banking.api.model.Account;
+import com.cogent.banking.api.model.Admin;
 import com.cogent.banking.api.model.Beneficiary;
 import com.cogent.banking.api.model.Customer;
 import com.cogent.banking.api.model.Transaction;
@@ -35,6 +37,7 @@ public class CustomerServiceImpl implements CustomerService{
 	private AccountRepository accountRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private PasswordEncoder passwordEncoder;
+	
 
 
 
@@ -53,6 +56,7 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public Customer addCustomer(Customer customer) {
+		customer.setRole(UserRole.CUSTOMER);
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 
 		Customer customerToAdd = customerRepository.save(customer);
@@ -367,7 +371,7 @@ public class CustomerServiceImpl implements CustomerService{
 			throws CustomerNotFoundException, AccountNotFoundException {
 
 		Account accountToUpdate = getAccountByCustomerIdAndAccountNo(customerId, accountNo);
-		accountToUpdate.setAccountStaus(account.getAccountStaus());
+		accountToUpdate.setAccountStatus(account.getAccountStatus());
 		accountRepository.save(accountToUpdate);
 	return accountToUpdate;
 		
@@ -395,6 +399,45 @@ public class CustomerServiceImpl implements CustomerService{
 		
 		return account;
 	}
+
+
+
+	@Override
+	public Customer loadCustomerByUsername(String username) throws CustomerNotFoundException {
+		try {
+		Customer customer = customerRepository.findByUsername(username);
+		if(customer == null) {
+			throw new Exception();
+		}
+		return customer;
+		}
+		catch(Exception e) {
+			throw new CustomerNotFoundException();
+		}
+		
+	}
+
+
+
+	@Override
+	public Customer loginCustomer(String username, String password) {
+		
+		return customerRepository.findByUsernameAndPassword(username, password);	
+		
+	}
+
+
+
+	@Override
+	public String matchCustomer(Customer customer) {
+		Customer foundCustomer = customerRepository.findByUsername(customer.getUsername());
+		if(foundCustomer.getRole() == customer.getRole()) {
+			return foundCustomer.getPassword();
+		}
+		return "user information does not match";
+	}
+		
+	
 
 
 
