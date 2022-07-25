@@ -31,9 +31,6 @@ public class CustomerServiceImpl implements CustomerService{
 	private AccountRepository accountRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private PasswordEncoder passwordEncoder;
-	
-
-
 
 	public CustomerServiceImpl(CustomerRepository customerRepository, TransactionRepository transactionRepository,
 			AccountRepository accountRepository, BeneficiaryRepository beneficiaryRepository,
@@ -82,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService{
 		Customer customerToUpdate = getCustomerById(customerId);
 		customerToUpdate.setFullname(customer.getFullname());
 		customerToUpdate.setUsername(customer.getUsername());
-		customerToUpdate.setPassword(customer.getPassword());
+		customerToUpdate.setPassword(passwordEncoder.encode(customer.getPassword()));
 		customerToUpdate.setMobile(customer.getMobile());
 	
 	
@@ -209,11 +206,12 @@ public class CustomerServiceImpl implements CustomerService{
 		Customer customer = getCustomerById(customerId);
 		List<Account> accounts = customer.getAccounts();
 		Account account = null;
-		Beneficiary beneficiaryToAdd = null;
+		Beneficiary beneficiaryToAdd = beneficiary;
 		for(int i =0; i < accounts.size(); i++) {
 			if(accounts.get(i).getAccountNo() == beneficiary.getBeneficiaryNo()) {
 				account = accounts.get(i);
 				account.addBeneficiaries(beneficiary);
+				beneficiaryToAdd.addToAccounts(account);
 				beneficiaryToAdd = beneficiaryRepository.save(beneficiary);
 				accountRepository.save(account);
 			}
@@ -429,6 +427,15 @@ public class CustomerServiceImpl implements CustomerService{
 			return foundCustomer.getPassword();
 		}
 		return "user information does not match";
+	}
+
+
+
+	@Override
+	public void setPassword(String username, String password) {
+		Customer cust = customerRepository.findByUsername(username);
+		cust.setPassword(passwordEncoder.encode(password));
+		customerRepository.save(cust);
 	}
 		
 	

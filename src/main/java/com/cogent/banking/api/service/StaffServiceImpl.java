@@ -58,7 +58,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public void addStaff(Staff staff) throws UserNameNotUniqueException {
+	public Staff addStaff(Staff staff) throws UserNameNotUniqueException {
 
 		List<Staff> allStaff = staffRepository.findAll();
 		for(int i = 0; i < allStaff.size(); i++) {
@@ -75,7 +75,7 @@ public class StaffServiceImpl implements StaffService {
 		
 		staff.setRole(UserRole.STAFF);
 		staff.setPassword(passwordEncoder.encode(staff.getPassword()));
-		staffRepository.save(staff);
+		return staffRepository.save(staff);
 
 	}
 
@@ -276,7 +276,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public void addAdmin(Admin admin) throws UserNameNotUniqueException {
+	public Admin addAdmin(Admin admin) throws UserNameNotUniqueException {
 		List<Admin> allAdmin = adminRepository.findAll();
 		for(int i = 0; i < allAdmin.size(); i++) {
 			try {
@@ -291,7 +291,7 @@ public class StaffServiceImpl implements StaffService {
 			}
 			admin.setRole(UserRole.ADMIN);
 			admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-			adminRepository.save(admin);
+			return adminRepository.save(admin);
 		
 	}
 
@@ -336,6 +336,20 @@ public class StaffServiceImpl implements StaffService {
 			return foundAdmin.getPassword();
 		}
 		return "user information does not match";
+	}
+
+	@Override
+	public void setStaffPassword(String username, String password) {
+		Staff staff = staffRepository.findByUsername(username);
+		staff.setPassword(passwordEncoder.encode(password));
+		staffRepository.save(staff);
+	}
+
+	@Override
+	public void setAdminPassword(String username, String password) {
+		Admin admin = adminRepository.findByUsername(username);
+		admin.setPassword(passwordEncoder.encode(password));
+		adminRepository.save(admin);
 	}
 
 

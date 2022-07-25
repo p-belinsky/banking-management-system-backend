@@ -24,17 +24,21 @@ import com.cogent.banking.api.model.Beneficiary;
 import com.cogent.banking.api.model.Customer;
 import com.cogent.banking.api.model.Staff;
 import com.cogent.banking.api.model.Transaction;
+import com.cogent.banking.api.model.User;
 import com.cogent.banking.api.service.StaffService;
+import com.cogent.banking.api.service.UserService;
 
 @RestController
 public class StaffController {
 	
 	private StaffService staffService;
+	private UserService userService;
 	
 	
-	public StaffController(StaffService staffService) {
+	public StaffController(StaffService staffService, UserService userService) {
 		super();
 		this.staffService = staffService;
+		this.userService = userService;
 	}
 
 
@@ -94,9 +98,9 @@ public class StaffController {
 	}
 	
 	@PostMapping("/api/admin/staff")
-	public ResponseEntity<Object> addStaff(@RequestBody Staff staff) throws UserNameNotUniqueException {
-		staffService.addStaff(staff);
-		return new ResponseEntity<Object>(HttpStatus.CREATED);
+	public ResponseEntity<Staff> addStaff(@RequestBody Staff staff) throws UserNameNotUniqueException {
+		Staff staffToAdd = staffService.addStaff(staff);
+		return new ResponseEntity<Staff>(staffToAdd, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/api/admin/staff")
@@ -112,9 +116,9 @@ public class StaffController {
 	}
 	
 	@PostMapping("/api/staff")
-	public ResponseEntity<String> addAdmin(@RequestBody Admin admin) throws UserNameNotUniqueException {
-		staffService.addAdmin(admin);
-		return new ResponseEntity<String>(HttpStatus.CREATED);	
+	public ResponseEntity<Admin> addAdmin(@RequestBody Admin admin) throws UserNameNotUniqueException {
+		Admin result = staffService.addAdmin(admin);
+		return new ResponseEntity<Admin>(result, HttpStatus.CREATED);	
 	}
 	
 	//staff controller
@@ -133,9 +137,21 @@ public class StaffController {
 		return new ResponseEntity<String> (staffService.matchStaff(staff), HttpStatus.OK);
 	}
 	
-	@PutMapping("/api/adminForgot")
-	public ResponseEntity<String> adminForgotPassword(@RequestBody Admin admin) {
-		return new ResponseEntity<String> (staffService.matchAdmin(admin), HttpStatus.OK);
+//	@PutMapping("/api/adminForgot")
+//	public ResponseEntity<String> adminForgotPassword(@RequestBody Admin admin) {
+//		return new ResponseEntity<String> (staffService.matchAdmin(admin), HttpStatus.OK);
+//	}
+	
+	
+	//changed put to get
+//	@GetMapping("/api/adminForgot")
+//	public ResponseEntity<String> adminForgotPassword(@RequestBody Admin admin){
+//		return new ResponseEntity<String>(staffService.matchAdmin(admin), HttpStatus.OK);
+//	}
+	
+	@GetMapping("/api/adminForgot/{username}")
+	public ResponseEntity<User> adminForgotPassword(@PathVariable("username") String username ){
+		return new ResponseEntity<User>(userService.loadUser(username), HttpStatus.OK);
 	}
 	
 
@@ -144,5 +160,17 @@ public class StaffController {
 		return new ResponseEntity<Admin> (staffService.getAdminByUsername(username), HttpStatus.OK);
 	}
 	
+	
+	@PutMapping("/api/resetPass/STAFF/{username}")
+	public ResponseEntity<Boolean> staffChangePass(@PathVariable("username")String username, @RequestBody String password){
+		staffService.setStaffPassword(username, password);
+		return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+	}
+	
+	@PutMapping("/api/resetPass/ADMIN/{username}")
+	public ResponseEntity<Boolean> adminChangePass(@PathVariable("username")String username, @RequestBody String password){
+		staffService.setAdminPassword(username, password);
+		return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+	}
 	
 }

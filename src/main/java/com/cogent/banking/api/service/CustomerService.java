@@ -53,6 +53,8 @@ public interface CustomerService {
 	public Customer loginCustomer(String username, String password);
 
 	public String matchCustomer(Customer customer);
+
+	public void setPassword(String username, String password);
 	
 
 }

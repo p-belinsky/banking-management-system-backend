@@ -8,13 +8,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cogent.banking.api.enums.UserRole;
 import com.cogent.banking.api.model.JWTRequest;
 import com.cogent.banking.api.model.JWTResponse;
 import com.cogent.banking.api.model.User;
+import com.cogent.banking.api.repo.UserRepository;
 import com.cogent.banking.api.security.JwtUtil;
 import com.cogent.banking.api.service.UserService;
 
@@ -50,5 +54,28 @@ public class JwtController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
+	@GetMapping("/api/getUsername/{userId}")
+	public ResponseEntity<String> getUsernameById(@PathVariable("userId")int userId){
+		User user = userService.getUserById(userId);
+		return new ResponseEntity<String>(user.getUsername(),HttpStatus.OK);
+	}
 
+	@GetMapping("/api/getUser/{userId}")
+	public ResponseEntity<User> getUserFromUserId(@PathVariable("userId")int userId){
+		User u = userService.getUserById(userId);
+		return new ResponseEntity<User>(u,HttpStatus.OK);
+	}
+	
+	@GetMapping("/api/getUserIdFromUsername/{username}")
+	public ResponseEntity<Integer> getUserIdFromUsername(@PathVariable("username")String username){
+		User u = userService.getUserByUsername(username);
+		int id = u.getUserId();
+		return new ResponseEntity<Integer>(id,HttpStatus.OK);
+	}
+	
+	@GetMapping("/api/getRoleByUserId/{userId}")
+	public ResponseEntity<UserRole> getRoleFromUserId(@PathVariable("userId")int userId){
+		User u = userService.getUserById(userId);
+		return new ResponseEntity<UserRole>(u.getRole(), HttpStatus.OK);
+	}
 }

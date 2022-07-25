@@ -8,6 +8,15 @@ import javax.persistence.Entity;
 public class Admin extends User {
 	
 
+	private String mobile;
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 
 	
 

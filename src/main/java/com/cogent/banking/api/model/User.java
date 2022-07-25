@@ -1,21 +1,29 @@
 package com.cogent.banking.api.model;
 
+import java.util.List;
+
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+
 import com.cogent.banking.api.enums.Status;
 import com.cogent.banking.api.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity(name="USERS")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type", 
   discriminatorType = DiscriminatorType.STRING)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="userId")
 public class User {
 	
 	@Id
@@ -27,10 +35,9 @@ public class User {
 	private Status status = Status.ENABLE;
 	private UserRole role;
 	
+	@OneToMany(fetch = FetchType.LAZY)
+	private List<SecurityQA> securityQA;
 	
-	
-
-
 	public int getUserId() {
 		return userId;
 	}
@@ -69,8 +76,18 @@ public class User {
 		this.status = status;
 	}
  
-
 	
 	
-
+	public List<SecurityQA> getSecurityQA() {
+		return securityQA;
+	}
+	public void setSecurityQA(List<SecurityQA> securityQA) {
+		this.securityQA = securityQA;
+	}
+	public void addSecurityQA(SecurityQA securityQA) {
+		this.securityQA.add(securityQA);
+	}
+	public void removeSecurityQA(SecurityQA securityQA) {
+		this.securityQA.remove(securityQA);
+	}
 }

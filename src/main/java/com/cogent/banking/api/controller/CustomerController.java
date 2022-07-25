@@ -35,14 +35,12 @@ public class CustomerController {
 	
 	
 	private CustomerService customerService;
-	private UserService userService;
 
 
 	
-	public CustomerController(CustomerService customerService, UserService userService) {
+	public CustomerController(CustomerService customerService) {
 		super();
 		this.customerService = customerService;
-		this.userService = userService;
 	}
 
 	@PostMapping("/register")
@@ -147,5 +145,12 @@ public class CustomerController {
 	public ResponseEntity<String> customerForgotPassword(@RequestBody Customer customer) {
 		return new ResponseEntity<String> (customerService.matchCustomer(customer), HttpStatus.OK);
 	}
+	
+	@PutMapping("/api/resetPass/CUSTOMER/{username}")
+	public ResponseEntity<Boolean> customerChangePass(@PathVariable("username")String username, @RequestBody String password){
+		customerService.setPassword(username, password);
+		return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+	}
+	
 
 }

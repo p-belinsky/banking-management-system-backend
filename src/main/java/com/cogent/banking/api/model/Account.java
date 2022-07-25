@@ -1,6 +1,7 @@
 package com.cogent.banking.api.model;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -13,12 +14,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.cogent.banking.api.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.cogent.banking.api.enums.AccountType;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="accountId")
 @Entity
 @Table(name="ACCOUNTS")
 public class Account {
@@ -34,8 +37,7 @@ public class Account {
 	private String staffUsername = "";
 	private Date dateCreated = new Date();
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "acc_ben_tbl", joinColumns = @JoinColumn(name = "accountId"))
+	@ManyToMany(mappedBy = "accounts")
 	private List<Beneficiary> beneficiaries = new ArrayList<>();
 	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

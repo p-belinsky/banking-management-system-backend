@@ -36,13 +36,13 @@ public interface StaffService {
 
 	public Account getAccountByAccountNumber(int accountNo) throws AccountNotFoundException;
 	
-	public void addStaff(Staff staff) throws UserNameNotUniqueException;
+	public Staff addStaff(Staff staff) throws UserNameNotUniqueException;
 	
 	public List<Staff> getAllStaff();
 	
 	public String enableStaff(Staff staff) throws StatusNotChangedException;
 	
-	public void addAdmin(Admin admin) throws UserNameNotUniqueException;
+	public Admin addAdmin(Admin admin) throws UserNameNotUniqueException;
 	
 	public Staff loginStaff(String username, String password);
 	
@@ -55,6 +55,10 @@ public interface StaffService {
 	public String matchStaff(Staff staff);
 
 	public String matchAdmin(Admin admin);
+
+	public void setStaffPassword(String username, String password);
+
+	public void setAdminPassword(String username, String password);
 
 	
 }

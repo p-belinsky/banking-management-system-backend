@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cogent.banking.api.model.User;
@@ -16,8 +17,6 @@ import com.cogent.banking.api.repo.UserRepository;
 public class UserService implements UserDetailsService {
 
 	private UserRepository userRepository;
-	
-	
 	
 	public UserService(UserRepository userRepository) {
 		super();
@@ -51,5 +50,17 @@ public class UserService implements UserDetailsService {
 			return user;
 		}
 	}
+	
+	public User getUserById(int userId) {
+		return userRepository.findById(userId).get();
+	}
+
+
+	public User getUserByUsername(String username) {
+		return userRepository.findByUsername(username);
+		
+	}
+
+
 
 }
